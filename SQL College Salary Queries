@@ -1,0 +1,94 @@
+
+/*
+The salary data goes from 1985 to 2016
+*/
+
+
+
+--After importing/accessing the tables, exploring the data quickly
+
+SELECT * FROM CollegePlaying;
+
+SELECT * From Salaries;
+
+
+-- Which schools' alum have the most total combined earnings?
+
+
+SELECT schoolID, SUM(salary)
+	FROM CollegePlaying as c
+		INNER JOIN Salaries as s
+			USING (playerID)
+GROUP BY schoolID
+ORDER BY SUM(salary) DESC;
+
+
+/* The biggest is Georgia Tech with $1,838,190,098,
+--followed by USC, and Arizona State. Stanford also high.*/
+
+
+-- What were the highest spending teams over this timeframe?
+
+SELECT teamid, SUM(salary)
+FROM Salaries
+GROUP BY teamid
+ORDER BY SUM(salary) DESC;
+
+/*
+ Naturally its the Yankees, followed by the Red Sox, Dodgers. Biggest personal
+ surprise was that the Blue Jays were sandwiched between Orioles and Reds.
+ The bottom was filled with partial teams, or expansion that did not play the
+ whole time. Big difference was the Pirates and Athletics. Despite being mid90s
+ expansion, Colorado is middle of the pack.
+*/
+
+-- What about since 2000
+
+
+SELECT teamid, SUM(salary)
+FROM Salaries
+WHERE yearid > 1999
+GROUP BY teamid
+ORDER BY SUM(salary) DESC;
+
+--  Top three stay the same. Phillies sneak up to fourth.
+
+
+
+--Which league spent more in total?
+
+SELECT lgid, SUM(salary)
+	FROM Salaries as s
+GROUP BY lgid
+ORDER BY SUM(salary) DESC;
+
+-- The NL spent 35,597,715,253, whereas the AL only 32,880,240,053
+
+
+
+-- What about the year a single school had the most players?
+
+SELECT schoolID, yearid, COUNT(*)
+	FROM CollegePlaying
+		INNER JOIN Salaries
+        USING (playerID)
+GROUP BY schoolID,yearid
+ORDER BY COUNT(*) DESC;
+
+/* UCLA and LSU in the late 80s dominate this. UCLA has the most, with 71
+alumni active in 1986, LSU had 63 in 1989, then tied for third, LSU and UCLA both
+had 59 players in 1987 .
+*/
+
+-- ...and in the 2000s?
+
+SELECT schoolID, c.yearid, COUNT(*)
+	FROM CollegePlaying as c
+		INNER JOIN Salaries as s
+        USING (playerID)
+WHERE c.yearid > 1999
+GROUP BY schoolID, c.yearid
+ORDER BY COUNT(*) DESC;
+
+
+--Long Beach in 2004 had 35
